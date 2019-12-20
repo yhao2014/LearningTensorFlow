@@ -47,8 +47,15 @@ for i in range(25):
 plt.show()
 
 #%% 设置神经网络结构
-model = keras.Sequentail([
+model = keras.Sequential([
     keras.layers.Flatten(input_shape=(28, 28)),     # 将样本扁平化处理
     keras.layers.Dense(128, activation='relu'),     # 设置该层神经元个数和激活函数
     keras.layers.Dense(10, activation='softmax')    # 设置该层神经元个数和激活函数
 ])
+
+model.compile(optimizer='adam',                         # 设置最优化算法为adam算法
+              loss='sparse_categorical_crossentropy',   # 设置损失函数为交叉熵损失
+              metrics=['accuracy'])                     # 设置评估标准
+
+#%% 训练模型
+model.fit()
