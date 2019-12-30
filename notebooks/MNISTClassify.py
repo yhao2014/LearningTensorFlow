@@ -58,4 +58,74 @@ model.compile(optimizer='adam',                         # 设置最优化算法�
               metrics=['accuracy'])                     # 设置评估标准
 
 #%% 训练模型
-model.fit()
+model.fit(train_images, train_labels, epochs=10)        # 网络训练迭代次数epochs=10
+
+#%% 模型评估
+test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=2)
+print('\tTest accuracy: ', test_acc)
+print('\tTest loss: ', test_loss)
+
+#%% 预测
+predictions = model.predict(test_images)
+print(predictions[0])
+print(test_labels[0], np.argmax(predictions[0]))        # 打印标签和预测类别
+
+#%% 绘制预测结果
+
+
+def plot_image(i, predictions_array, labels, imgs):
+    predictions_array, label, img = predictions_array, labels[i], imgs[i]
+    plt.grid(False)
+    plt.xticks([])
+    plt.yticks([])
+
+    plt.imshow(img, cmap=plt.cm.binary)
+
+    predicted_label = np.argmax(predictions_array)
+    if predicted_label == label:
+        color = 'blue'
+    else:
+        color = 'red'
+
+    plt.xlabel("{} {:2.0f}% {}".format(class_names[predicted_label],
+                                       100*np.max(predictions_array),
+                                       class_names[label],
+                                       color=color))
+
+
+def plot_value_array(i, predictions_array, labels):
+    predictions_array, label = predictions_array, labels[i]
+    plt.grid(False)
+    plt.xticks(range(10))
+    plt.yticks([])
+    thisplot = plt.bar(range(10), predictions_array, color="#777777")
+    plt.ylim([0, 1])
+    predicted_label = np.argmax(predictions_array)
+
+    thisplot[predicted_label].set_color('red')
+    thisplot[label].set_color('blue')
+
+
+row_num = 5
+col_num = 3
+image_num = row_num * col_num
+plt.figure(figsize=(2*2*col_num, 2*row_num))
+for i in range(image_num):
+    plt.subplot(row_num, 2*col_num, 2*i+1)
+    plot_image(i, predictions[i], test_labels, test_images)
+    plt.subplot(row_num, 2*col_num, 2*i+2)
+    plot_value_array(i, predictions[i], test_labels)
+plt.tight_layout()
+plt.show()
+
+#%% 单样本预测
+print(test_images[1].shape)
+img = np.expand_dims(test_images[1], 0)     # 在axis=0添加维度
+print(img.shape)
+
+predictions_single = model.predict(img)
+print(predictions_single)
+
+plot_value_array(1, predictions_single[0], test_labels)
+_ = plt.xticks(range(10), class_names, rotation=45)
+plt.show()
