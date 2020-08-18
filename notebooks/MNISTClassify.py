@@ -70,9 +70,8 @@ predictions = model.predict(test_images)
 print(predictions[0])
 print(test_labels[0], np.argmax(predictions[0]))        # 打印标签和预测类别
 
+
 #%% 绘制预测结果
-
-
 def plot_image(i, predictions_array, labels, imgs):
     predictions_array, label, img = predictions_array, labels[i], imgs[i]
     plt.grid(False)
